@@ -1,0 +1,37 @@
+.app {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+}
+
+.title {
+  margin-bottom: 4px;
+}
+
+.lineTitle {
+  margin: 0 0 6px 0;
+  color: #444;
+}
+.form {
+  display: flex;
+  flex-direction: column;
+  max-width: 350px;
+  width: 100%;
+}
+
+.formFieldWrap {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.errorMsg {
+  color: red;
+}
+
+.link {
+  margin-top: 10px;
+}
