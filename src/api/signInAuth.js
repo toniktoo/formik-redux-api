@@ -39,8 +39,8 @@ export const signInAuth = ({
       const responseErrors = err.response.data.errors;
       for (let key in responseErrors) {
         if (key.toString() === 'email or password') {
-          setFieldError('email', 'email or password');
-          setFieldError('password', 'email or password');
+          setFieldError('email', 'email or password is invalid');
+          setFieldError('password', 'email or password is invalid');
         } else {
           setFieldError(key.toString(), responseErrors[key][0]);
         }
