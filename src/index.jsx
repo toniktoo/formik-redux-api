@@ -7,7 +7,7 @@ import { applyMiddleware, compose, createStore } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { BrowserRouter } from 'react-router-dom';
-import { reducer } from './redux/reducers/rootReducer';
+import { reducer } from './redux/reducers';
 import * as serviceWorker from './serviceWorker';
 import App from './App';
 

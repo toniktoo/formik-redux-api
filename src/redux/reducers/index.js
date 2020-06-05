@@ -4,7 +4,8 @@ import {
   authenticatedUserRequest,
   authenticatedUserSuccess,
   logout,
-} from '../actions/actionAuth';
+} from '../actions';
+import { removeItemDB } from '../../db';
 
 const initState = {
   name: '',
@@ -39,8 +40,8 @@ export const reducer = handleActions(
       };
     },
     [logout]: (state, { payload: { isAuth, token, name } }) => {
-      localStorage.removeItem('token');
-      localStorage.removeItem('name');
+      removeItemDB('token');
+      removeItemDB('name');
       return {
         ...state,
         name,

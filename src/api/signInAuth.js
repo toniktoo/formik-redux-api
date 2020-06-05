@@ -3,7 +3,8 @@ import {
   authenticatedUserRequest,
   authenticatedUserSuccess,
   authenticatedUserFailure,
-} from '../redux/actions/actionAuth';
+} from '../redux/actions';
+import { setItemDB } from '../db';
 
 export const signInAuth = ({
   username,
@@ -32,10 +33,13 @@ export const signInAuth = ({
       const token = await response.data.user.token;
       const name = await response.data.user.username;
       await dispatch(authenticatedUserSuccess({ isAuth: true, token, name }));
-      localStorage.setItem('token', token);
-      localStorage.setItem('name', name);
+      setItemDB('token', token);
+      setItemDB('name', name);
       dispatch(authenticatedUserRequest({ isLoadingAuth: false }));
     } catch (err) {
+      if (err.message === 'Network Error') {
+        alert(err.message);
+      }
       const responseErrors = err.response.data.errors;
       for (let key in responseErrors) {
         if (key.toString() === 'email or password') {

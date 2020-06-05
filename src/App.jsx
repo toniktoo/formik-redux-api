@@ -6,7 +6,7 @@ import Home from './components/Home';
 import FormRegistration from './components/FormRegistration';
 import PrivateRoute from './components/PrivateRoute';
 import PublicRoute from './components/PublicRoute';
-import { authenticatedUserSuccess } from './redux/actions/actionAuth';
+import { authenticatedUserSuccess } from './redux/actions';
 
 const App = ({ dispatch }) => {
   useEffect(() => {

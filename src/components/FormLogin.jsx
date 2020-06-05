@@ -10,13 +10,7 @@ const URL = 'https://conduit.productionready.io/api/users/login';
 
 const schema = yup.object().shape({
   email: yup.string().email('Not correct email').required('Enter email'),
-  password: yup
-    .string()
-    .required('Enter password')
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
-      'Password between 8 and 40 characters, at least one number and one capital letter',
-    ),
+  password: yup.string().required('Enter password'),
 });
 
 const renderForm = ({ isLoadingAuth, handleSubmit }) => (isLoadingAuth ? (
@@ -53,7 +47,10 @@ const FormLogin = withFormik({
   validationSchema: () => schema,
   handleSubmit: ({ email, password }, { props, setFieldError }) => {
     props.signInAuth({
-      email, password, setFieldError, URL,
+      email,
+      password,
+      setFieldError,
+      URL,
     });
   },
   displayName: 'FormAuth',

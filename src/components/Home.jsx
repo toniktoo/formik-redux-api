@@ -1,7 +1,7 @@
 /* eslint-disable react/button-has-type */
 import React from 'react';
 import { connect } from 'react-redux';
-import { logout } from '../redux/actions/actionAuth';
+import { logout } from '../redux/actions';
 
 const Home = ({ isLoadingAuth, dispatch, name }) => {
   const handleLogout = () => {
