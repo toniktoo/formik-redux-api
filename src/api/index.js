@@ -10,8 +10,8 @@ const fetchOptions = {
   json: true,
 };
 
-export const fetchSignUp = async (data, URL) => {
-  const response = await axios.post({
+export const fetchSignUp = async (data) => {
+  const response = await axios({
     ...fetchOptions,
     data: JSON.stringify(data),
     url: URL,
@@ -19,11 +19,11 @@ export const fetchSignUp = async (data, URL) => {
   return response;
 };
 
-export const fetchSignIn = async (data, URL) => {
-  const response = await axios.post({
+export const fetchSignIn = async (data) => {
+  const response = await axios({
     ...fetchOptions,
     data: JSON.stringify(data),
     url: `${URL}/login`,
   });
-  return respons;
+  return response;
 };

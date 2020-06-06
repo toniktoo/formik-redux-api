@@ -1,12 +1,49 @@
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable guard-for-in */
 import React from 'react';
 import { withFormik } from 'formik';
 import * as yup from 'yup';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import FormField from './FormField';
-import { signInAuth } from '../api/signInAuth';
+import { setItemDB } from '../db';
+import { fetchSignUp } from '../api';
+import {
+  authenticatedUserRequest,
+  authenticatedUserSuccess,
+  authenticatedUserFailure,
+} from '../redux/actions';
 
-const URL = 'https://conduit.productionready.io/api/users/';
+export const signInAuth = ({
+  username,
+  email,
+  password,
+  setFieldError,
+}) => async (dispatch) => {
+  dispatch(authenticatedUserRequest({ isLoadingAuth: true }));
+  try {
+    const data = {
+      user: { email, password, username },
+    };
+    const response = await fetchSignUp(data);
+    const token = await response.data.user.token;
+    const name = await response.data.user.username;
+    await dispatch(authenticatedUserSuccess({ isAuth: true, token, name }));
+    setItemDB('token', token);
+    setItemDB('name', name);
+    dispatch(authenticatedUserRequest({ isLoadingAuth: false }));
+  } catch (err) {
+    if (err.message === 'Network Error') {
+      alert(err.message);
+    }
+    const responseErrors = err.response.data.errors;
+    for (const key in responseErrors) {
+      setFieldError(key.toString(), responseErrors[key][0]);
+    }
+    dispatch(authenticatedUserFailure({ isAuth: false }));
+    dispatch(authenticatedUserRequest({ isLoadingAuth: false }));
+  }
+};
 
 const schema = yup.object().shape({
   username: yup
@@ -63,10 +100,13 @@ const FormRegistration = withFormik({
   validationSchema: () => schema,
   handleSubmit: ({ username, email, password }, { props, setFieldError }) => {
     props.signInAuth({
-      username, email, password, setFieldError, URL,
+      username,
+      email,
+      password,
+      setFieldError,
     });
   },
-  displayName: 'FormAuth',
+  displayName: 'FormRegistration',
 })(renderForm);
 
 const mapStateToProps = (state) => ({ isLoadingAuth: state.isLoadingAuth });

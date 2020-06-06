@@ -4,9 +4,44 @@ import * as yup from 'yup';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import FormField from './FormField';
-import { signInAuth } from '../api/signInAuth';
+import { setItemDB } from '../db';
+import { fetchSignIn } from '../api';
+import {
+  authenticatedUserRequest,
+  authenticatedUserSuccess,
+  authenticatedUserFailure,
+} from '../redux/actions';
 
-const URL = 'https://conduit.productionready.io/api/users/login';
+const signInAuth = ({
+  username, email, password, setFieldError,
+}) => async (
+  dispatch,
+) => {
+  dispatch(authenticatedUserRequest({ isLoadingAuth: true }));
+  try {
+    const data = {
+      user: { email, password, username },
+    };
+    const response = await fetchSignIn(data);
+    const token = await response.data.user.token;
+    const name = await response.data.user.username;
+    await dispatch(authenticatedUserSuccess({ isAuth: true, token, name }));
+    setItemDB('token', token);
+    setItemDB('name', name);
+    dispatch(authenticatedUserRequest({ isLoadingAuth: false }));
+  } catch (err) {
+    if (err.message === 'Network Error') {
+      alert(err.message);
+    }
+    const responseErrors = err.response.data.errors;
+    if (responseErrors['email or password']) {
+      setFieldError('email', 'email or password is invalid');
+      setFieldError('password', 'email or password is invalid');
+    }
+    dispatch(authenticatedUserFailure({ isAuth: false }));
+    dispatch(authenticatedUserRequest({ isLoadingAuth: false }));
+  }
+};
 
 const schema = yup.object().shape({
   email: yup.string().email('Not correct email').required('Enter email'),
@@ -50,7 +85,6 @@ const FormLogin = withFormik({
       email,
       password,
       setFieldError,
-      URL,
     });
   },
   displayName: 'FormAuth',

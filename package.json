@@ -27,7 +27,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint src/**/*.jsx",
-    "lint:fix": "eslint src/**/*.jsx --fix",
+    "lint:fix": "eslint src/**/*.{jsx,js} --fix",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },

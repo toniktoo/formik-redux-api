@@ -16,29 +16,23 @@ const initState = {
 
 export const reducer = handleActions(
   {
-    [authenticatedUserRequest]: (state, { payload: { isLoadingAuth } }) => {
-      return {
-        ...state,
-        isLoadingAuth,
-      };
-    },
+    [authenticatedUserRequest]: (state, { payload: { isLoadingAuth } }) => ({
+      ...state,
+      isLoadingAuth,
+    }),
     [authenticatedUserSuccess]: (
       state,
-      { payload: { isAuth, token, name } }
-    ) => {
-      return {
-        ...state,
-        isAuth,
-        token,
-        name,
-      };
-    },
-    [authenticatedUserFailure]: (state, { payload: { isAuth } }) => {
-      return {
-        ...state,
-        isAuth,
-      };
-    },
+      { payload: { isAuth, token, name } },
+    ) => ({
+      ...state,
+      isAuth,
+      token,
+      name,
+    }),
+    [authenticatedUserFailure]: (state, { payload: { isAuth } }) => ({
+      ...state,
+      isAuth,
+    }),
     [logout]: (state, { payload: { isAuth, token, name } }) => {
       removeItemDB('token');
       removeItemDB('name');
@@ -50,5 +44,5 @@ export const reducer = handleActions(
       };
     },
   },
-  initState
+  initState,
 );
