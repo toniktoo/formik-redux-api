@@ -6,12 +6,11 @@ import * as yup from 'yup';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import FormField from './FormField';
-import { setItemDB } from '../db';
 import { fetchSignUp } from '../api';
 import {
-  authenticatedUserRequest,
-  authenticatedUserSuccess,
-  authenticatedUserFailure,
+  authUserRequest,
+  authUpUserSuccess,
+  authUpUserFailure,
 } from '../redux/actions';
 
 export const signInAuth = ({
@@ -20,7 +19,7 @@ export const signInAuth = ({
   password,
   setFieldError,
 }) => async (dispatch) => {
-  dispatch(authenticatedUserRequest({ isLoadingAuth: true }));
+  dispatch(authUserRequest({ isLoading: true }));
   try {
     const data = {
       user: { email, password, username },
@@ -28,20 +27,23 @@ export const signInAuth = ({
     const response = await fetchSignUp(data);
     const token = await response.data.user.token;
     const name = await response.data.user.username;
-    await dispatch(authenticatedUserSuccess({ isAuth: true, token, name }));
-    setItemDB('token', token);
-    setItemDB('name', name);
-    dispatch(authenticatedUserRequest({ isLoadingAuth: false }));
-  } catch (err) {
-    if (err.message === 'Network Error') {
-      alert(err.message);
-    }
-    const responseErrors = err.response.data.errors;
-    for (const key in responseErrors) {
-      setFieldError(key.toString(), responseErrors[key][0]);
-    }
-    dispatch(authenticatedUserFailure({ isAuth: false }));
-    dispatch(authenticatedUserRequest({ isLoadingAuth: false }));
+    await dispatch(
+      authUpUserSuccess({
+        isAuth: true,
+        token,
+        name,
+        isLoading: false,
+      }),
+    );
+  } catch (error) {
+    dispatch(
+      authUpUserFailure({
+        isAuth: false,
+        isLoading: false,
+        error,
+        setFieldError,
+      }),
+    );
   }
 };
 
@@ -60,7 +62,7 @@ const schema = yup.object().shape({
     ),
 });
 
-const renderForm = ({ isLoadingAuth, handleSubmit }) => (isLoadingAuth ? (
+const renderForm = ({ isLoading, handleSubmit }) => (isLoading ? (
   'Loading...'
 ) : (
   <form onSubmit={handleSubmit} className="form">
@@ -109,6 +111,8 @@ const FormRegistration = withFormik({
   displayName: 'FormRegistration',
 })(renderForm);
 
-const mapStateToProps = (state) => ({ isLoadingAuth: state.isLoadingAuth });
+const mapStateToProps = (state) => ({
+  isLoading: state.authReducer.isLoading,
+});
 
 export default connect(mapStateToProps, { signInAuth })(FormRegistration);

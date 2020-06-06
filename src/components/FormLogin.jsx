@@ -4,12 +4,11 @@ import * as yup from 'yup';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import FormField from './FormField';
-import { setItemDB } from '../db';
 import { fetchSignIn } from '../api';
 import {
-  authenticatedUserRequest,
-  authenticatedUserSuccess,
-  authenticatedUserFailure,
+  authUserRequest,
+  authUpUserSuccess,
+  authUpUserFailure,
 } from '../redux/actions';
 
 const signInAuth = ({
@@ -17,7 +16,7 @@ const signInAuth = ({
 }) => async (
   dispatch,
 ) => {
-  dispatch(authenticatedUserRequest({ isLoadingAuth: true }));
+  dispatch(authUserRequest({ isLoading: true }));
   try {
     const data = {
       user: { email, password, username },
@@ -25,21 +24,23 @@ const signInAuth = ({
     const response = await fetchSignIn(data);
     const token = await response.data.user.token;
     const name = await response.data.user.username;
-    await dispatch(authenticatedUserSuccess({ isAuth: true, token, name }));
-    setItemDB('token', token);
-    setItemDB('name', name);
-    dispatch(authenticatedUserRequest({ isLoadingAuth: false }));
-  } catch (err) {
-    if (err.message === 'Network Error') {
-      alert(err.message);
-    }
-    const responseErrors = err.response.data.errors;
-    if (responseErrors['email or password']) {
-      setFieldError('email', 'email or password is invalid');
-      setFieldError('password', 'email or password is invalid');
-    }
-    dispatch(authenticatedUserFailure({ isAuth: false }));
-    dispatch(authenticatedUserRequest({ isLoadingAuth: false }));
+    await dispatch(
+      authUpUserSuccess({
+        isAuth: true,
+        token,
+        name,
+        isLoading: false,
+      }),
+    );
+  } catch (error) {
+    dispatch(
+      authUpUserFailure({
+        isAuth: false,
+        isLoading: false,
+        error,
+        setFieldError,
+      }),
+    );
   }
 };
 
@@ -48,7 +49,7 @@ const schema = yup.object().shape({
   password: yup.string().required('Enter password'),
 });
 
-const renderForm = ({ isLoadingAuth, handleSubmit }) => (isLoadingAuth ? (
+const renderForm = ({ isLoading, handleSubmit }) => (isLoading ? (
   'Loading...'
 ) : (
   <form onSubmit={handleSubmit} className="form">
@@ -87,9 +88,11 @@ const FormLogin = withFormik({
       setFieldError,
     });
   },
-  displayName: 'FormAuth',
+  displayName: 'signInAuth',
 })(renderForm);
 
-const mapStateToProps = (state) => ({ isLoadingAuth: state.isLoadingAuth });
+const mapStateToProps = (state) => ({
+  isLoading: state.authReducer.isLoading,
+});
 
 export default connect(mapStateToProps, { signInAuth })(FormLogin);

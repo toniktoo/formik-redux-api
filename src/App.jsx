@@ -5,14 +5,14 @@ import FormLogin from './components/FormLogin';
 import Home from './components/Home';
 import FormRegistration from './components/FormRegistration';
 import PrivateRoute from './components/PrivateRoute';
-import PublicRoute from './components/PublicRoute';
-import { authenticatedUserSuccess } from './redux/actions';
+import AuthenticatedRoute from './components/AuthenticatedRoute';
+import { authUpUserSuccess } from './redux/actions';
 
 const App = ({ dispatch }) => {
   useEffect(() => {
     if (localStorage.token !== undefined) {
       dispatch(
-        authenticatedUserSuccess({
+        authUpUserSuccess({
           isAuth: true,
           token: localStorage.token,
           name: localStorage.name,
@@ -25,8 +25,8 @@ const App = ({ dispatch }) => {
     <div className="app">
       <Switch>
         <PrivateRoute path="/" exact component={Home} />
-        <PublicRoute path="/login" component={FormLogin} />
-        <PublicRoute path="/sign" component={FormRegistration} />
+        <AuthenticatedRoute path="/login" component={FormLogin} />
+        <AuthenticatedRoute path="/sign" component={FormRegistration} />
         <Redirect to="/login" />
       </Switch>
     </div>
@@ -34,6 +34,6 @@ const App = ({ dispatch }) => {
 };
 
 export default connect((state) => ({
-  isLoadingAuth: state.isLoadingAuth,
-  token: state.token,
+  isAuth: state.authReducer.isAuth,
+  token: state.authReducer.token,
 }))(App);

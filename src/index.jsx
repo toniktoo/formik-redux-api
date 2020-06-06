@@ -7,11 +7,11 @@ import { applyMiddleware, compose, createStore } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { BrowserRouter } from 'react-router-dom';
-import { reducer } from './redux/reducers';
+import rootReducer from './redux/reducers';
 import App from './App';
 
 const store = createStore(
-  reducer,
+  rootReducer,
   compose(
     applyMiddleware(thunk),
     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),

@@ -3,11 +3,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { logout } from '../redux/actions';
 
-const Home = ({ isLoadingAuth, dispatch, name }) => {
+const Home = ({ isLoading, dispatch, name }) => {
   const handleLogout = () => {
     dispatch(logout({ isAuth: false, token: undefined, name: '' }));
   };
-  return isLoadingAuth ? (
+  return isLoading ? (
     'Loading...'
   ) : (
     <div>
@@ -21,6 +21,6 @@ const Home = ({ isLoadingAuth, dispatch, name }) => {
 };
 
 export default connect((state) => ({
-  name: state.name,
-  isLoadingAuth: state.isLoadingAuth,
+  name: state.authReducer.name,
+  isLoading: state.authReducer.isLoading,
 }))(Home);
