@@ -8,9 +8,9 @@ import { Link } from 'react-router-dom';
 import FormField from './FormField';
 import { fetchSignUp } from '../api';
 import {
-  authUserRequest,
-  authUpUserSuccess,
-  authUpUserFailure,
+  signupUserRequest,
+  signupUserSuccess,
+  signupUserFailure,
 } from '../redux/actions';
 
 export const signInAuth = ({
@@ -19,7 +19,7 @@ export const signInAuth = ({
   password,
   setFieldError,
 }) => async (dispatch) => {
-  dispatch(authUserRequest({ isLoading: true }));
+  dispatch(signupUserRequest({ isLoading: true }));
   try {
     const data = {
       user: { email, password, username },
@@ -28,7 +28,7 @@ export const signInAuth = ({
     const token = await response.data.user.token;
     const name = await response.data.user.username;
     await dispatch(
-      authUpUserSuccess({
+      signupUserSuccess({
         isAuth: true,
         token,
         name,
@@ -37,7 +37,7 @@ export const signInAuth = ({
     );
   } catch (error) {
     dispatch(
-      authUpUserFailure({
+      signupUserFailure({
         isAuth: false,
         isLoading: false,
         error,

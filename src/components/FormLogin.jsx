@@ -7,8 +7,8 @@ import FormField from './FormField';
 import { fetchSignIn } from '../api';
 import {
   authUserRequest,
-  authUpUserSuccess,
-  authUpUserFailure,
+  authUserSuccess,
+  authUserFailure,
 } from '../redux/actions';
 
 const signInAuth = ({
@@ -25,7 +25,7 @@ const signInAuth = ({
     const token = await response.data.user.token;
     const name = await response.data.user.username;
     await dispatch(
-      authUpUserSuccess({
+      authUserSuccess({
         isAuth: true,
         token,
         name,
@@ -34,7 +34,7 @@ const signInAuth = ({
     );
   } catch (error) {
     dispatch(
-      authUpUserFailure({
+      authUserFailure({
         isAuth: false,
         isLoading: false,
         error,

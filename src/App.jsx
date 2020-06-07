@@ -6,13 +6,13 @@ import Home from './components/Home';
 import FormRegistration from './components/FormRegistration';
 import PrivateRoute from './components/PrivateRoute';
 import AuthenticatedRoute from './components/AuthenticatedRoute';
-import { authUpUserSuccess } from './redux/actions';
+import { authUserSuccess } from './redux/actions';
 
 const App = ({ dispatch }) => {
   useEffect(() => {
     if (localStorage.token !== undefined) {
       dispatch(
-        authUpUserSuccess({
+        authUserSuccess({
           isAuth: true,
           token: localStorage.token,
           name: localStorage.name,
